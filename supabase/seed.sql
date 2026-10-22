@@ -1,0 +1,3 @@
+-- Seed inicial do CF Leads
+-- Organização padrão: Agência C&F
+-- Criado no Marco M2

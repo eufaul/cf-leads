@@ -1,0 +1,26 @@
+services:
+  cfleads-app:
+    image: ghcr.io/eufaul/cf-leads:latest
+    container_name: cfleads-app
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    networks:
+      - cfleads_network
+      - host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cfleads-http.entrypoints=web"
+      - "traefik.http.routers.cfleads-http.rule=Host(`cfleads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads.entrypoints=websecure"
+      - "traefik.http.routers.cfleads.rule=Host(`cfleads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads.tls=true"
+      - "traefik.http.routers.cfleads.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cfleads.loadbalancer.server.port=3000"
+
+networks:
+  cfleads_network:
+    name: cfleads_network
+    driver: bridge
+  host:
+    external: true

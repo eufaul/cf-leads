@@ -1,0 +1,59 @@
+name: CI — Qualidade e Segurança
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  code-quality:
+    name: Lint, Tipos e Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Typecheck (TypeScript estrito)
+        run: npm run typecheck
+
+      - name: Testes Unitários (Vitest)
+        run: npm run test
+
+      - name: Build de Produção
+        run: npm run build
+
+      - name: Auditoria de Dependências de Produção
+        run: npm audit --omit=dev --audit-level=high
+
+  security-scan:
+    name: Varredura de Segurança (Gitleaks e Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código (histórico completo para detecção de segredos)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks (Detecção de segredos e chaves vazadas)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Semgrep (Análise estática de vulnerabilidades OWASP)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/owasp-top-ten
+            p/javascript
+            p/typescript

@@ -1,0 +1,48 @@
+# Dependências
+/node_modules
+/.pnp
+.pnp.js
+.yarn/cache
+
+# Build e compilação
+/.next/
+/out/
+/build
+/dist
+
+# Ambientes e segredos (NUNCA versionar)
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.pem
+*.key
+
+# Testes e cobertura
+/coverage
+/.nyc_output
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Logs e depuração
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Sistema e IDEs
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Antigravity brain / scratch temporário se houver
+.system_generated/
+
+tsconfig.tsbuildinfo
