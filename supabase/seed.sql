@@ -1,3 +1,2 @@
--- Seed inicial do CF Leads
--- Organização padrão: Agência C&F
--- Criado no Marco M2
+-- Seed do Supabase (executado em novos ambientes de banco)
+\i supabase/migrations/20261022000004_seeds.sql
