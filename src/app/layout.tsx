@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 export const metadata: Metadata = {
   title: "CF Leads — Prospecção Ativa",
@@ -20,8 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className="min-h-screen bg-slate-50 text-slate-900">
+      <body className="min-h-screen bg-slate-50 text-slate-900 pb-20 md:pb-6 antialiased">
         {children}
+        <BottomNav />
       </body>
     </html>
   );
