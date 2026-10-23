@@ -26,13 +26,13 @@ export interface ApifySearchParams {
 /**
  * Executa o crawler de Google Places na Apify usando safeFetch.
  * Ator: compass/crawler-google-places
+ * Endpoint síncrono otimizado: run-sync-get-dataset-items
  */
 export async function runGooglePlacesCrawler(params: ApifySearchParams): Promise<GooglePlaceResult[]> {
   const token = process.env.APIFY_TOKEN;
 
   if (!token) {
-    // Se não houver token configurado, retorna dados de demonstração com base na busca
-    return generateMockPlaces(params);
+    throw new Error("APIFY_TOKEN não configurado no servidor.");
   }
 
   const query = `${params.niche} em ${params.city}`;
@@ -46,42 +46,23 @@ export async function runGooglePlacesCrawler(params: ApifySearchParams): Promise
     allPlacesNoSearchAction: "",
   };
 
-  const actorUrl = `https://api.apify.com/v2/acts/compass~crawler-google-places/runs?token=${encodeURIComponent(token)}&waitForFinish=120`;
+  const syncUrl = `https://api.apify.com/v2/acts/compass~crawler-google-places/run-sync-get-dataset-items?token=${encodeURIComponent(token)}`;
 
-  const runResponse = await safeFetch(actorUrl, {
+  const response = await safeFetch(syncUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(requestBody),
-    timeoutMs: 120000,
+    timeoutMs: 90000,
   });
 
-  if (!runResponse.ok) {
-    const errorText = await runResponse.text();
-    throw new Error(`Erro na API do Apify (${runResponse.status}): ${errorText}`);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Erro na API do Apify (${response.status}): ${errorText}`);
   }
 
-  const runData = await runResponse.json();
-  const datasetId = runData.data?.defaultDatasetId;
+  const rawItems: any[] = await response.json();
 
-  if (!datasetId) {
-    throw new Error("Dataset ID não retornado pelo Apify.");
-  }
-
-  // Buscar itens do dataset
-  const datasetUrl = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${encodeURIComponent(token)}&format=json`;
-  const itemsResponse = await safeFetch(datasetUrl, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    timeoutMs: 30000,
-  });
-
-  if (!itemsResponse.ok) {
-    throw new Error(`Erro ao baixar resultados do dataset Apify: ${itemsResponse.statusText}`);
-  }
-
-  const rawItems: any[] = await itemsResponse.json();
-
-  return rawItems
+  return (rawItems || [])
     .map((item) => {
       const rawPhone = item.phone || item.phoneUnformatted || null;
       const phoneE164 = rawPhone ? normalizePhoneE164(rawPhone) : null;
@@ -109,34 +90,4 @@ export async function runGooglePlacesCrawler(params: ApifySearchParams): Promise
       }
       return true;
     });
-}
-
-function generateMockPlaces(params: ApifySearchParams): GooglePlaceResult[] {
-  const cities = [params.city];
-  const list: GooglePlaceResult[] = [];
-  const baseName = params.niche.replace(/s$/i, "");
-
-  for (let i = 1; i <= 6; i++) {
-    const hasWebsite = i % 2 === 0;
-    list.push({
-      placeId: `ChIJ_mock_google_id_${params.niche}_${i}`,
-      title: `${baseName} ${["Elite", "Excelência", "Aliança", "Premium", "Central", "Regional"][i - 1]}`,
-      phone: `(19) 9${8000 + i * 111}-${1000 + i * 222}`,
-      phoneE164: `+55199${8000 + i * 111}${1000 + i * 222}`,
-      website: hasWebsite ? `https://${baseName.toLowerCase().replace(/\s+/g, "")}${i}.com.br` : null,
-      address: `Av. Principal, ${100 * i} - Centro`,
-      city: params.city,
-      state: "SP",
-      categoryName: params.niche,
-      totalScore: 4.2 + (i % 8) * 0.1,
-      reviewsCount: 12 + i * 8,
-      hasWebsite,
-    });
-  }
-
-  if (params.onlyWithoutWebsite) {
-    return list.filter((item) => !item.hasWebsite);
-  }
-
-  return list;
 }
