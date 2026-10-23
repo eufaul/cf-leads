@@ -163,31 +163,59 @@ export function GoogleMapsSearch({ recentJobs }: { recentJobs: any[] }) {
 
       {/* Sucesso após importação */}
       {importedSuccess !== null && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+        <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-xs font-bold text-emerald-900">Importação Concluída com Sucesso!</h4>
+              <h4 className="text-sm font-bold text-emerald-900">Importação Concluída com Sucesso!</h4>
               <p className="text-xs text-emerald-700">
-                <strong>{importedSuccess}</strong> novas empresas foram adicionadas à base como leads prontos para prospecção.
+                <strong>{importedSuccess}</strong> novas empresas foram importadas e cadastradas no sistema. Escolha como deseja usá-las agora:
               </p>
             </div>
           </div>
-          <Link
-            href="/lote"
-            className="px-3 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 shrink-0 shadow-2xs"
-          >
-            Ver Lote
-          </Link>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs font-bold">
+            <Link
+              href="/hoje"
+              className="py-2.5 px-3 rounded-xl bg-emerald-600 text-white text-center hover:bg-emerald-700 transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>Ligar Agora (Hoje)</span>
+            </Link>
+
+            <Link
+              href="/lote"
+              className="py-2.5 px-3 rounded-xl bg-white border border-emerald-300 text-emerald-800 text-center hover:bg-emerald-100/70 transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+            >
+              <span>Montar Lote Semanal</span>
+            </Link>
+
+            <Link
+              href="/leads"
+              className="py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-center hover:bg-slate-100 transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+            >
+              <span>Ver Base de Leads</span>
+            </Link>
+          </div>
         </div>
       )}
 
       {/* Prévia dos Resultados */}
       {results && results.length > 0 && (
         <div className="space-y-3">
+          <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Passo 1 de 2: Prévia encontrada no Maps</p>
+              <p className="text-blue-700">
+                Marque abaixo as empresas que deseja trabalhar e clique no botão azul <strong>"Importar Empresas Selecionadas"</strong> para adicioná-las à sua lista de prospecção.
+              </p>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Prévia de Resultados ({results.length})</h3>
+              <h3 className="text-sm font-bold text-slate-900">Empresas Encontradas ({results.length})</h3>
               <p className="text-xs text-slate-500">
                 {results.filter((r) => !r.isDuplicate).length} empresas inéditas aptas para importação
               </p>

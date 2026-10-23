@@ -3,6 +3,13 @@ const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
+  redirects: async () => [
+    {
+      source: "/busca",
+      destination: "/buscar",
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: "/:path*",
