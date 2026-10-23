@@ -37,21 +37,22 @@ Este documento acompanha a evolução dos marcos do projeto. Cada marco só é e
   - Modal de registro de tentativa em até 3 toques com aplicação imediata do motor de regras de próxima ação (`outcome_rules`).
   - Suíte de 10 testes unitários passando com 100% de sucesso.
 
-- [ ] **M4 — Semana de Prospecção**:
-  - Segunda-feira: tela e algoritmo de montagem e sugestão do lote de 30 leads (reentradas vencidas > novos não contatados).
-  - Tela "Hoje": refinamento da fila priorizada de ações do dia com contadores da semana.
-  - Sexta-feira: tela de revisão obrigatória do lote com atribuição de destino por lead (oportunidade, retorno agendado, descartado, encerrado temporário).
-  - Trava do sistema: obriga revisão pendente de sexta antes de abrir novo lote na segunda.
-  - Reentrada de 60 dias e rotina de encerramento definitivo no banco.
+- [x] **M4 — Semana de Prospecção**:
+  - Algoritmo inteligente de montagem e sugestão dos 30 leads (prioriza reentradas vencidas do ciclo 2 sobre novos leads).
+  - Confirmação de lote (`weekly_batches` e `batch_items`), transição de estado para `no_lote` e agendamento da 1ª ligação.
+  - Tela de Revisão Obrigatória de Sexta-feira com destinação individual por lead (`oportunidade`, `retorno_agendado`, `descartado`, `encerrado_temporario`).
+  - Trava operacional de sistema: obriga a revisão pendente de lote anterior antes de permitir a abertura de novo lote.
+  - Regra de transição de ciclo: lead em ciclo 2 sem falar com decisor vira automaticamente `encerrado_definitivo` com higienização de dados pessoais e hashes na lista de bloqueio.
+  - Resolução completa dos erros 404: rotas `/lote`, `/pipeline`, `/relatorios`, `/config` e `/buscar` implementadas e integradas.
 
 - [ ] **M5 — Captação via Google Maps**:
   - Integração com Apify (crawler Google Places).
   - Prévia de resultados, remoção de duplicatas/bloqueados e importação seletiva.
 
 - [ ] **M6 — Gestão e Relatórios**:
-  - Pipeline Kanban visual por estado.
-  - Relatórios de prospecção (taxa de contato com decisor, tentativas até o contato, melhor dia e faixa de horário, conversão, motivos de descarte).
-  - Tela de configurações do sistema (parâmetros do lote, regras de próxima ação e templates de mensagens com variáveis dinâmicas).
+  - Pipeline Kanban visual por estado com filtros avançados.
+  - Relatórios de prospecção detalhados por período e lote.
+  - Edição interativa das configurações e modelos de mensagem.
 
 - [ ] **M7 — Publicação e Operação**:
   - Build do container Docker e publicação na VPS via Traefik.
