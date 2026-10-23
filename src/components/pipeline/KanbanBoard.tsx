@@ -20,11 +20,11 @@ interface KanbanLead {
     city: string | null;
     niche: string | null;
     google_rating?: number | null;
+    contacts?: Array<{
+      name: string;
+      is_decision_maker: boolean;
+    }>;
   } | null;
-  contacts?: Array<{
-    name: string;
-    is_decision_maker: boolean;
-  }>;
 }
 
 export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
@@ -85,15 +85,15 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
         </div>
       </div>
 
-      {/* Colunas do Kanban */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 overflow-x-auto pb-4">
+      {/* Colunas do Kanban com Flex e largura fixa */}
+      <div className="flex gap-4 overflow-x-auto pb-4 items-start w-full">
         {columns.map((col) => {
           const colLeads = filteredLeads.filter((l) => l.status === col.id);
 
           return (
             <div
               key={col.id}
-              className={`rounded-2xl border p-3 flex flex-col min-w-[270px] ${col.color}`}
+              className={`rounded-2xl border p-3.5 flex flex-col w-[280px] shrink-0 ${col.color}`}
             >
               <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80">
                 <span className="text-xs font-bold text-slate-800">{col.label}</span>
@@ -103,81 +103,87 @@ export function KanbanBoard({ initialLeads }: { initialLeads: KanbanLead[] }) {
               </div>
 
               <div className="space-y-2.5 overflow-y-auto max-h-[70vh]">
-                {colLeads.map((lead) => {
-                  const comp = lead.companies;
-                  const telLink = getTelLink(comp?.phone_e164);
-                  const dm = lead.contacts?.find((c) => c.is_decision_maker);
+                {colLeads.length > 0 ? (
+                  colLeads.map((lead) => {
+                    const comp = lead.companies;
+                    const telLink = getTelLink(comp?.phone_e164);
+                    const dm = comp?.contacts?.find((c) => c.is_decision_maker);
 
-                  return (
-                    <div
-                      key={lead.id}
-                      className="bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all space-y-2"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-start justify-between gap-1">
-                          <Link
-                            href={`/leads/${lead.id}`}
-                            className="text-xs font-bold text-slate-900 hover:text-blue-600 truncate block flex-1"
-                          >
-                            {comp?.name}
-                          </Link>
-                          {comp?.google_rating && (
-                            <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-700 shrink-0">
-                              <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                              {comp.google_rating}
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="text-[11px] text-slate-500 truncate">
-                          {comp?.city} • {comp?.niche}
-                        </p>
-
-                        {dm && (
-                          <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-700">
-                            <User className="w-3 h-3 text-blue-500" />
-                            <span className="truncate">{dm.name}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Ações e Mover de Coluna */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 text-[10px]">
-                        <div className="flex items-center gap-1">
-                          {telLink && (
-                            <a
-                              href={telLink}
-                              title="Ligar"
-                              className="w-6 h-6 flex items-center justify-center rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                    return (
+                      <div
+                        key={lead.id}
+                        className="bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all space-y-2"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-start justify-between gap-1">
+                            <Link
+                              href={`/leads/${lead.id}`}
+                              className="text-xs font-bold text-slate-900 hover:text-blue-600 truncate block flex-1"
                             >
-                              <Phone className="w-3 h-3" />
-                            </a>
+                              {comp?.name}
+                            </Link>
+                            {comp?.google_rating && (
+                              <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-700 shrink-0">
+                                <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                                {comp.google_rating}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-[11px] text-slate-500 truncate">
+                            {comp?.city} • {comp?.niche}
+                          </p>
+
+                          {dm && (
+                            <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-700">
+                              <User className="w-3 h-3 text-blue-500" />
+                              <span className="truncate">{dm.name}</span>
+                            </div>
                           )}
-                          <Link
-                            href={`/leads/${lead.id}`}
-                            className="text-slate-500 hover:text-blue-600 font-medium px-1.5 py-0.5 rounded hover:bg-slate-100"
-                          >
-                            Ficha
-                          </Link>
                         </div>
 
-                        {/* Dropdown Mover */}
-                        <select
-                          value={lead.status}
-                          disabled={movingId === lead.id}
-                          onChange={(e) => handleMoveStatus(lead.id, e.target.value)}
-                          className="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                        >
-                          <option value="novo">Mover: Novo</option>
-                          <option value="no_lote">Mover: No Lote</option>
-                          <option value="retorno_agendado">Mover: Retorno</option>
-                          <option value="oportunidade">Mover: Oportunidade</option>
-                          <option value="descartado">Mover: Descartado</option>
-                        </select>
+                        {/* Ações e Mover de Coluna */}
+                        <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 text-[10px]">
+                          <div className="flex items-center gap-1">
+                            {telLink && (
+                              <a
+                                href={telLink}
+                                title="Ligar"
+                                className="w-6 h-6 flex items-center justify-center rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                              >
+                                <Phone className="w-3 h-3" />
+                              </a>
+                            )}
+                            <Link
+                              href={`/leads/${lead.id}`}
+                              className="text-slate-500 hover:text-blue-600 font-medium px-1.5 py-0.5 rounded hover:bg-slate-100"
+                            >
+                              Ficha
+                            </Link>
+                          </div>
+
+                          {/* Dropdown Mover */}
+                          <select
+                            value={lead.status}
+                            disabled={movingId === lead.id}
+                            onChange={(e) => handleMoveStatus(lead.id, e.target.value)}
+                            className="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                          >
+                            <option value="novo">Mover: Novo</option>
+                            <option value="no_lote">Mover: No Lote</option>
+                            <option value="retorno_agendado">Mover: Retorno</option>
+                            <option value="oportunidade">Mover: Oportunidade</option>
+                            <option value="descartado">Mover: Descartado</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="py-8 text-center text-slate-400 text-xs bg-white/40 rounded-xl border border-dashed border-slate-200">
+                    Nenhum lead nesta etapa
+                  </div>
+                )}
               </div>
             </div>
           );

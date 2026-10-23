@@ -29,11 +29,11 @@ export default async function HojePage() {
         phone_e164,
         email,
         city,
-        niche
-      ),
-      contacts (
-        name,
-        is_decision_maker
+        niche,
+        contacts (
+          name,
+          is_decision_maker
+        )
       ),
       attempts (
         id
@@ -46,7 +46,7 @@ export default async function HojePage() {
 
   const items = (rawLeads || []).map((l: any) => {
     const comp = l.companies;
-    const decisionMaker = l.contacts?.find((c: any) => c.is_decision_maker);
+    const decisionMaker = comp?.contacts?.find((c: any) => c.is_decision_maker);
     const attemptsCount = l.attempts ? l.attempts.length : 0;
 
     let priorityLabel = "Lote da Semana";

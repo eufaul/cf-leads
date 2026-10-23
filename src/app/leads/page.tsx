@@ -25,11 +25,11 @@ export default async function LeadsPage({
         name,
         phone_e164,
         city,
-        niche
-      ),
-      contacts (
-        name,
-        is_decision_maker
+        niche,
+        contacts (
+          name,
+          is_decision_maker
+        )
       )
     `)
     .order("created_at", { ascending: false });
@@ -122,7 +122,7 @@ export default async function LeadsPage({
           {filteredLeads && filteredLeads.length > 0 ? (
             filteredLeads.map((lead: any) => {
               const comp = lead.companies;
-              const decisionMaker = lead.contacts?.find((c: any) => c.is_decision_maker);
+              const decisionMaker = comp?.contacts?.find((c: any) => c.is_decision_maker);
               const badge = statusBadges[lead.status] || { label: lead.status, bg: "bg-slate-100", text: "text-slate-700" };
               const telLink = getTelLink(comp?.phone_e164);
 

@@ -232,14 +232,14 @@ export async function exportLeadsCsvAction() {
         website,
         cnpj,
         google_rating,
-        google_reviews
-      ),
-      contacts (
-        name,
-        role_title,
-        is_decision_maker,
-        phone_e164,
-        email
+        google_reviews,
+        contacts (
+          name,
+          role_title,
+          is_decision_maker,
+          phone_e164,
+          email
+        )
       )
     `)
     .eq("organization_id", profile.organization_id);
@@ -286,7 +286,7 @@ export async function exportLeadsCsvAction() {
 
   const rows = leads.map((l: any) => {
     const comp = l.companies;
-    const dm = l.contacts?.find((c: any) => c.is_decision_maker);
+    const dm = comp?.contacts?.find((c: any) => c.is_decision_maker);
 
     return [
       escapeCsv(l.id),

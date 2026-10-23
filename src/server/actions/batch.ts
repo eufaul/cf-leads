@@ -80,11 +80,11 @@ export async function getBatchSuggestionsAction(filters?: { niche?: string; city
         name,
         phone_e164,
         city,
-        niche
-      ),
-      contacts (
-        name,
-        is_decision_maker
+        niche,
+        contacts (
+          name,
+          is_decision_maker
+        )
       )
     `)
     .eq("organization_id", profile.organization_id)

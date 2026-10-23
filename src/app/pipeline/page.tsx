@@ -23,11 +23,11 @@ export default async function PipelinePage() {
         phone_e164,
         city,
         niche,
-        google_rating
-      ),
-      contacts (
-        name,
-        is_decision_maker
+        google_rating,
+        contacts (
+          name,
+          is_decision_maker
+        )
       )
     `)
     .order("created_at", { ascending: false });

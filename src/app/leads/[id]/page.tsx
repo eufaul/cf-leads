@@ -13,7 +13,7 @@ export default async function LeadDetailPage({
 
   const { data: lead } = await supabase
     .from("leads")
-    .select("*, companies(*), contacts(*)")
+    .select("*, companies(*, contacts(*))")
     .eq("id", id)
     .single();
 
@@ -27,7 +27,8 @@ export default async function LeadDetailPage({
     .eq("lead_id", id)
     .order("occurred_at", { ascending: false });
 
-  const decisionMaker = lead.contacts?.find((c: any) => c.is_decision_maker) || null;
+  const contacts = (lead.companies as any)?.contacts || [];
+  const decisionMaker = contacts.find((c: any) => c.is_decision_maker) || null;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -37,7 +38,7 @@ export default async function LeadDetailPage({
         <LeadDetailView
           lead={lead}
           company={lead.companies}
-          contacts={lead.contacts || []}
+          contacts={contacts}
           attempts={attempts || []}
           decisionMaker={decisionMaker}
         />
