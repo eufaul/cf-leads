@@ -42,7 +42,22 @@ export function TopHeader({ userEmail }: { userEmail?: string | null }) {
         </nav>
 
         {/* Usuário e Logout */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/relatorios"
+            className="md:hidden p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
+            title="Relatórios"
+          >
+            <BarChart2 className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/config"
+            className="md:hidden p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
+            title="Configurações"
+          >
+            <Settings className="w-4 h-4" />
+          </Link>
+
           {userEmail && (
             <span className="hidden sm:inline text-xs font-medium text-slate-500">
               {userEmail}

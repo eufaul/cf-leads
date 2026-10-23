@@ -53,10 +53,12 @@ Este documento acompanha a evolução dos marcos do projeto. Cada marco só é e
   - Registro de jobs em `search_jobs` e trilha em `audit_log`.
   - 12 testes unitários validados no CI.
 
-- [ ] **M6 — Gestão e Relatórios**:
-  - Pipeline Kanban visual por estado com filtros avançados.
-  - Relatórios de prospecção detalhados por período e lote.
-  - Edição interativa das configurações e modelos de mensagem.
+- [x] **M6 — Gestão e Relatórios**:
+  - Pipeline visual em Kanban (`/pipeline`) com colunas por estado e movimentação rápida sem recarregar a página.
+  - Relatórios analíticos de prospecção (`/relatorios`): taxa de conversão em oportunidades, taxa de contato com decisor, análise temporal por dia da semana e período (manhã vs tarde), contagem de tentativas por canal e ranking de motivos de descarte.
+  - Exportação em lote de leads para CSV com auditoria de segurança obrigatória (`audit_log`) e restrição a perfis administradores.
+  - Painel de configurações operacionais (`/config`): edição de tamanho do lote, teto de tentativas, quarentena de reentrada (60 dias), retorno padrão e fuso horário.
+  - Editor visual de modelos de mensagem (`TemplatesEditor`): criação, edição e exclusão de mensagens com inserção dinâmica de variáveis (`{{empresa}}`, `{{decisor}}`, `{{cidade}}`, `{{nicho}}`).
 
 - [ ] **M7 — Publicação e Operação**:
   - Build do container Docker e publicação na VPS via Traefik.
