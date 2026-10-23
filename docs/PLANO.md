@@ -45,9 +45,13 @@ Este documento acompanha a evolução dos marcos do projeto. Cada marco só é e
   - Regra de transição de ciclo: lead em ciclo 2 sem falar com decisor vira automaticamente `encerrado_definitivo` com higienização de dados pessoais e hashes na lista de bloqueio.
   - Resolução completa dos erros 404: rotas `/lote`, `/pipeline`, `/relatorios`, `/config` e `/buscar` implementadas e integradas.
 
-- [ ] **M5 — Captação via Google Maps**:
-  - Integração com Apify (crawler Google Places).
-  - Prévia de resultados, remoção de duplicatas/bloqueados e importação seletiva.
+- [x] **M5 — Captação via Google Maps**:
+  - Módulo de integração com Apify (crawler Google Places `compass/crawler-google-places`) via `safeFetch`.
+  - Mecanismo anti-duplicação na prévia: compara contra empresas existentes e contra a lista de bloqueio por hashes (LGPD).
+  - Interface `/buscar`: pesquisa por nicho e cidade, filtro opcional "somente sem site oficial", prévia detalhada com rating e reviews.
+  - Seleção em lote com 1 clique e importação instantânea para o banco (`source = 'google_maps'`, `status = 'novo'`).
+  - Registro de jobs em `search_jobs` e trilha em `audit_log`.
+  - 12 testes unitários validados no CI.
 
 - [ ] **M6 — Gestão e Relatórios**:
   - Pipeline Kanban visual por estado com filtros avançados.

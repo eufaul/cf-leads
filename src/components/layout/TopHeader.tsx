@@ -27,6 +27,9 @@ export function TopHeader({ userEmail }: { userEmail?: string | null }) {
           <Link href="/leads" className="hover:text-blue-600 transition-colors">
             Leads
           </Link>
+          <Link href="/buscar" className="hover:text-blue-600 transition-colors">
+            Buscar no Maps
+          </Link>
           <Link href="/pipeline" className="hover:text-blue-600 transition-colors">
             Pipeline
           </Link>
