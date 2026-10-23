@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { TopHeader } from "@/components/layout/TopHeader";
-import { Settings, Sliders, MessageSquare, Zap, Shield } from "lucide-react";
+import { Sliders, MessageSquare } from "lucide-react";
+import { ApifyTokensManager } from "@/components/config/ApifyTokensManager";
 
 export default async function ConfigPage() {
   const supabase = await createClient();
@@ -21,14 +22,13 @@ export default async function ConfigPage() {
     .eq("organization_id", profile?.organization_id || "00000000-0000-0000-0000-000000000001")
     .single();
 
-  const { data: rules } = await supabase
-    .from("outcome_rules")
-    .select("*")
-    .order("channel");
-
   const { data: templates } = await supabase
     .from("message_templates")
     .select("*");
+
+  const apifyTokens = Array.isArray(settings?.apify_tokens)
+    ? (settings.apify_tokens as any[])
+    : [];
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -37,8 +37,14 @@ export default async function ConfigPage() {
       <main className="max-w-4xl mx-auto p-4 space-y-5">
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Configurações do Sistema</h1>
-          <p className="text-xs text-slate-500">Parâmetros da prospecção, regras de próxima ação e templates</p>
+          <p className="text-xs text-slate-500">Parâmetros da prospecção, pool de chaves Apify e templates de mensagem</p>
         </div>
+
+        {/* Gerenciamento de Múltiplas Chaves da Apify (Pool com rotação) */}
+        <ApifyTokensManager
+          tokens={apifyTokens}
+          envTokenExists={!!process.env.APIFY_TOKEN}
+        />
 
         {/* Parâmetros do Lote e Regras de Negócio */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs space-y-4">

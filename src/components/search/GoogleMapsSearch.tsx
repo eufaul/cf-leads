@@ -103,18 +103,18 @@ export function GoogleMapsSearch({ recentJobs }: { recentJobs: any[] }) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="space-y-1 sm:col-span-1">
             <label className="text-xs font-semibold text-slate-700">Nicho / Palavra-Chave *</label>
             <input
               name="niche"
               required
-              placeholder="Ex: Clínicas Odontológicas, Marmorarias"
+              placeholder="Ex: Clínicas, Marmorarias"
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 sm:col-span-1">
             <label className="text-xs font-semibold text-slate-700">Cidade e Estado *</label>
             <input
               name="city"
@@ -122,6 +122,20 @@ export function GoogleMapsSearch({ recentJobs }: { recentJobs: any[] }) {
               placeholder="Ex: Indaiatuba, SP"
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
+          </div>
+
+          <div className="space-y-1 sm:col-span-1">
+            <label className="text-xs font-semibold text-slate-700">Qtd. de Empresas</label>
+            <select
+              name="maxResults"
+              defaultValue="20"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+            >
+              <option value="10">10 empresas</option>
+              <option value="20">20 empresas</option>
+              <option value="30">30 empresas</option>
+              <option value="50">50 empresas</option>
+            </select>
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 const searchSchema = z.object({
   niche: z.string().min(2, "Informe o nicho de prospecção"),
   city: z.string().min(2, "Informe a cidade ou região"),
+  maxResults: z.coerce.number().min(1).max(100).default(20),
   onlyWithoutWebsite: z.boolean().default(false),
 });
 
@@ -33,12 +34,30 @@ export async function searchGooglePlacesAction(formData: FormData) {
   const raw = {
     niche: formData.get("niche") as string,
     city: formData.get("city") as string,
+    maxResults: formData.get("maxResults") || "20",
     onlyWithoutWebsite: formData.get("onlyWithoutWebsite") === "on",
   };
 
   const parsed = searchSchema.safeParse(raw);
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message };
+  }
+
+  // Buscar pool de tokens cadastrados em settings
+  const { data: settings } = await supabase
+    .from("settings")
+    .select("apify_tokens")
+    .eq("organization_id", profile.organization_id)
+    .maybeSingle();
+
+  const tokensPool: string[] = [];
+  if (settings && Array.isArray((settings as any).apify_tokens)) {
+    (settings as any).apify_tokens.forEach((item: any) => {
+      const val = typeof item === "string" ? item : item?.token;
+      if (val && typeof val === "string" && val.trim()) {
+        tokensPool.push(val.trim());
+      }
+    });
   }
 
   // 1. Criar registro inicial do job
@@ -49,7 +68,10 @@ export async function searchGooglePlacesAction(formData: FormData) {
       user_id: user.id,
       niche: parsed.data.niche,
       city: parsed.data.city,
-      filters: { onlyWithoutWebsite: parsed.data.onlyWithoutWebsite },
+      filters: {
+        onlyWithoutWebsite: parsed.data.onlyWithoutWebsite,
+        maxResults: parsed.data.maxResults,
+      },
       status: "rodando",
     })
     .select()
@@ -60,11 +82,13 @@ export async function searchGooglePlacesAction(formData: FormData) {
   }
 
   try {
-    // 2. Executar o crawler
+    // 2. Executar o crawler com o pool de tokens e quantidade configurável
     const rawPlaces = await runGooglePlacesCrawler({
       niche: parsed.data.niche,
       city: parsed.data.city,
+      maxResults: parsed.data.maxResults,
       onlyWithoutWebsite: parsed.data.onlyWithoutWebsite,
+      tokensPool,
     });
 
     // 3. Filtragem de duplicatas e empresas bloqueadas por hash
