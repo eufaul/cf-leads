@@ -51,7 +51,7 @@ export async function runGooglePlacesCrawler(params: ApifySearchParams): Promise
     searchStringsArray: [query],
     maxCrawledPlacesPerSearch: maxItems,
     language: "pt-BR",
-    countryCode: "BR",
+    countryCode: "br",
     allPlacesNoSearchAction: "",
   };
 
