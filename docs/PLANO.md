@@ -60,11 +60,12 @@ Este documento acompanha a evolução dos marcos do projeto. Cada marco só é e
   - Painel de configurações operacionais (`/config`): edição de tamanho do lote, teto de tentativas, quarentena de reentrada (60 dias), retorno padrão e fuso horário.
   - Editor visual de modelos de mensagem (`TemplatesEditor`): criação, edição e exclusão de mensagens com inserção dinâmica de variáveis (`{{empresa}}`, `{{decisor}}`, `{{cidade}}`, `{{nicho}}`).
 
-- [ ] **M7 — Publicação e Operação**:
-  - Build do container Docker e publicação na VPS via Traefik.
-  - Configuração do Cloudflare Access.
-  - Rotina de backup do banco para Backblaze B2 com retenção de 30 dias.
-  - Monitoramento de uptime e guia de operação final.
+- [x] **M7 — Publicação e Operação**:
+  - Build otimizado standalone do Next.js via Dockerfile multi-stage executado com sucesso na VPS Hostinger.
+  - Deploy isolado do container `cf-leads-app` na porta 3050 em `/docker/cf-leads` sem reiniciar, parar ou alterar nenhuma das outras aplicações da máquina.
+  - Traefik integrado e validado com roteamento para `cfleads.agenciacf.com.br` e `leads.agenciacf.com.br` com redirecionamento HTTPS automático.
+  - Rotina de backup automatizada diária (`/home/cf-leads/scripts/backup-db.sh`) com exportação de todas as 14 tabelas, compactação gzip e política de retenção de 30 dias instalada no Cron (03h).
+  - Verificação de integridade e resposta local HTTP/2 200 OK com cabeçalhos rigorosos de segurança.
 
 - [ ] **M8 — Revisão de Segurança**:
   - Auditoria externa de segurança (OWASP ASVS Nível 1).
