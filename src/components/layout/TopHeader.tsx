@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PhoneCall, LogOut, Settings, BarChart2 } from "lucide-react";
+import { PhoneCall, LogOut, Settings, BarChart2, User } from "lucide-react";
 import { logoutAction } from "@/server/actions/auth";
 
 export function TopHeader({ userEmail }: { userEmail?: string | null }) {
@@ -57,12 +57,25 @@ export function TopHeader({ userEmail }: { userEmail?: string | null }) {
           >
             <Settings className="w-4 h-4" />
           </Link>
+          <Link
+            href="/perfil"
+            className="md:hidden p-1.5 text-slate-500 hover:text-blue-600 rounded-lg hover:bg-slate-100 transition-colors"
+            title="Meu Perfil"
+          >
+            <User className="w-4 h-4" />
+          </Link>
 
           {userEmail && (
-            <span className="hidden sm:inline text-xs font-medium text-slate-500">
-              {userEmail}
-            </span>
+            <Link
+              href="/perfil"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-blue-600 px-2.5 py-1 rounded-lg hover:bg-slate-50 transition-colors"
+              title="Acessar Perfil"
+            >
+              <User className="w-3.5 h-3.5 text-blue-600" />
+              <span>{userEmail}</span>
+            </Link>
           )}
+
           <form action={logoutAction}>
             <button
               type="submit"

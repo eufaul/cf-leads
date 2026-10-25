@@ -3,6 +3,8 @@ import { TopHeader } from "@/components/layout/TopHeader";
 import { ApifyTokensManager } from "@/components/config/ApifyTokensManager";
 import { SettingsEditor } from "@/components/config/SettingsEditor";
 import { TemplatesEditor } from "@/components/config/TemplatesEditor";
+import Link from "next/link";
+import { User } from "lucide-react";
 
 export default async function ConfigPage() {
   const supabase = await createClient();
@@ -37,9 +39,18 @@ export default async function ConfigPage() {
       <TopHeader userEmail={user?.email} />
 
       <main className="max-w-4xl mx-auto p-4 space-y-5">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Configurações do Sistema</h1>
-          <p className="text-xs text-slate-500">Parâmetros operacionais, pool de chaves Apify e templates de mensagem</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Configurações do Sistema</h1>
+            <p className="text-xs text-slate-500">Parâmetros operacionais, pool de chaves Apify e templates de mensagem</p>
+          </div>
+          <Link
+            href="/perfil"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs shrink-0"
+          >
+            <User className="w-4 h-4 text-blue-600" />
+            <span>Editar Meu Perfil</span>
+          </Link>
         </div>
 
         {/* Gerenciamento de Múltiplas Chaves da Apify (Pool com rotação) */}
