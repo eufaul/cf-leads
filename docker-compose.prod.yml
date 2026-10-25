@@ -1,0 +1,25 @@
+services:
+  cf-leads:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cf-leads:latest
+    container_name: cf-leads-app
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - NODE_ENV=production
+      - PORT=3050
+      - HOSTNAME=0.0.0.0
+      - TZ=America/Sao_Paulo
+    env_file:
+      - .env.production
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cfleads.rule=Host(`cfleads.agenciacf.com.br`) || Host(`leads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads.entrypoints=websecure"
+      - "traefik.http.routers.cfleads.tls=true"
+      - "traefik.http.routers.cfleads.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cfleads.loadbalancer.server.port=3050"
+      - "traefik.http.routers.cfleads-http.rule=Host(`cfleads.agenciacf.com.br`) || Host(`leads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads-http.entrypoints=web"
