@@ -1,7 +1,7 @@
 services:
   cf-leads:
     build:
-      context: .
+      context: /home/cf-leads
       dockerfile: Dockerfile
     image: cf-leads:latest
     container_name: cf-leads-app
