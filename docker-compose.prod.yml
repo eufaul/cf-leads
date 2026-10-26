@@ -16,10 +16,10 @@ services:
       - .env.production
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.cfleads.rule=Host(`cfleads.agenciacf.com.br`) || Host(`leads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads.rule=Host(`cfleads.agenciacf.com.br`)"
       - "traefik.http.routers.cfleads.entrypoints=websecure"
       - "traefik.http.routers.cfleads.tls=true"
       - "traefik.http.routers.cfleads.tls.certresolver=letsencrypt"
       - "traefik.http.services.cfleads.loadbalancer.server.port=3050"
-      - "traefik.http.routers.cfleads-http.rule=Host(`cfleads.agenciacf.com.br`) || Host(`leads.agenciacf.com.br`)"
+      - "traefik.http.routers.cfleads-http.rule=Host(`cfleads.agenciacf.com.br`)"
       - "traefik.http.routers.cfleads-http.entrypoints=web"
